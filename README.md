@@ -171,10 +171,5 @@ Alcune idee di miglioramento:
 - [ ] Preview in tempo reale con scroll sincronizzato
 - [ ] Importazione da file JSON/PDF esistenti
 
-## 📄 Licenza
 
-Questo progetto è disponibile sotto licenza **MIT**. Consulta il file LICENSE per ulteriori dettagli.
 
----
-
-**Creato con ❤️ usando v0 by Vercel**
