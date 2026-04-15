@@ -24,7 +24,7 @@ Un'applicazione web moderna per creare e personalizzare il tuo curriculum vitae 
 1. **Clona il repository** (o scarica il file ZIP dal v0 Block)
    ```bash
    git clone <repository-url>
-   cd generatore-cv-europass
+   cd cv-generator
    ```
 
 2. **Installa le dipendenze**
