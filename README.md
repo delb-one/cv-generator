@@ -23,7 +23,7 @@ Un'applicazione web moderna per creare e personalizzare il tuo curriculum vitae 
 
 1. **Clona il repository** 
    ```bash
-   git clone <repository-url>
+   git clone [<repository-url>](https://github.com/delb-one/cv-generator.git)
    cd cv-generator
    ```
 
