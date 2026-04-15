@@ -21,7 +21,7 @@ Un'applicazione web moderna per creare e personalizzare il tuo curriculum vitae 
 
 ### Installazione
 
-1. **Clona il repository** (o scarica il file ZIP dal v0 Block)
+1. **Clona il repository** 
    ```bash
    git clone <repository-url>
    cd cv-generator
