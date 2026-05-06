@@ -27,9 +27,16 @@ export function DatiPersonaliForm({ data, onChange }: Props) {
     if (!file) return
     const reader = new FileReader()
     reader.onload = (ev) => {
-      update('foto', ev.target?.result as string)
+      onChange({
+        ...data,
+        foto: ev.target?.result as string,
+        fotoOffsetX: 0,
+        fotoOffsetY: 0,
+      })
     }
     reader.readAsDataURL(file)
+    // Reset the value so the same file can be uploaded again
+    e.target.value = ''
   }
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
@@ -45,11 +52,11 @@ export function DatiPersonaliForm({ data, onChange }: Props) {
     const handleMouseMove = (moveEvent: MouseEvent) => {
       const deltaX = moveEvent.clientX - startX
       const deltaY = moveEvent.clientY - startY
-      
+
       // Calculate new offsets (clamped between -50 and 50)
       const newOffsetX = Math.max(-50, Math.min(50, startOffsetX + deltaX * 0.5))
       const newOffsetY = Math.max(-50, Math.min(50, startOffsetY + deltaY * 0.5))
-      
+
       update('fotoOffsetX', newOffsetX)
       update('fotoOffsetY', newOffsetY)
     }
@@ -74,15 +81,15 @@ export function DatiPersonaliForm({ data, onChange }: Props) {
       {/* Foto profilo */}
       <div className="flex items-start gap-4">
         <div className="flex flex-col items-center gap-2">
-          <div 
+          <div
             ref={dragContainerRef}
             className="relative h-20 w-20 border-2 border-border rounded-full overflow-hidden cursor-move active:cursor-grabbing hover:ring-2 hover:ring-primary/50 transition-all"
             onMouseDown={handleMouseDown}
             style={{ cursor: data.foto ? 'grab' : 'default' }}
           >
             {data.foto ? (
-              <img 
-                src={data.foto} 
+              <img
+                src={data.foto}
                 alt="Foto profilo"
                 className="w-full h-full object-cover"
                 style={{
@@ -101,7 +108,7 @@ export function DatiPersonaliForm({ data, onChange }: Props) {
               </div>
             )}
           </div>
-          {(data.fotoOffsetX !== 0 || data.fotoOffsetY !== 0) && data.foto && (
+          {/* {(data.fotoOffsetX !== 0 || data.fotoOffsetY !== 0) && data.foto && (
             <Button
               type="button"
               variant="ghost"
@@ -112,7 +119,7 @@ export function DatiPersonaliForm({ data, onChange }: Props) {
               <X className="h-3 w-3 mr-1" />
               Reset pos.
             </Button>
-          )}
+          )} */}
         </div>
         <div className="flex flex-col gap-2 flex-1">
           <Button
@@ -130,7 +137,14 @@ export function DatiPersonaliForm({ data, onChange }: Props) {
               variant="ghost"
               size="sm"
               className="text-destructive hover:text-destructive"
-              onClick={() => update('foto', null)}
+              onClick={() =>
+                onChange({
+                  ...data,
+                  foto: null,
+                  fotoOffsetX: 0,
+                  fotoOffsetY: 0,
+                })
+              }
             >
               <X className="h-4 w-4 mr-2" />
               Rimuovi
