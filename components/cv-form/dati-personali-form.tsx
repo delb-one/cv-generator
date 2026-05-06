@@ -1,11 +1,11 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useState, useCallback } from 'react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { UserCircle, Upload, X } from 'lucide-react'
+import { UserCircle, Upload, X, Move } from 'lucide-react'
 import type { DatiPersonali } from '@/lib/cv-types'
 
 interface Props {
@@ -15,8 +15,10 @@ interface Props {
 
 export function DatiPersonaliForm({ data, onChange }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [isDragging, setIsDragging] = useState(false)
+  const dragContainerRef = useRef<HTMLDivElement>(null)
 
-  const update = (field: keyof DatiPersonali, value: string | null) => {
+  const update = (field: keyof DatiPersonali, value: string | number | null) => {
     onChange({ ...data, [field]: value })
   }
 
@@ -30,20 +32,89 @@ export function DatiPersonaliForm({ data, onChange }: Props) {
     reader.readAsDataURL(file)
   }
 
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    if (!data.foto) return
+    e.preventDefault()
+    setIsDragging(true)
+
+    const startX = e.clientX
+    const startY = e.clientY
+    const startOffsetX = data.fotoOffsetX
+    const startOffsetY = data.fotoOffsetY
+
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      const deltaX = moveEvent.clientX - startX
+      const deltaY = moveEvent.clientY - startY
+      
+      // Calculate new offsets (clamped between -50 and 50)
+      const newOffsetX = Math.max(-50, Math.min(50, startOffsetX + deltaX * 0.5))
+      const newOffsetY = Math.max(-50, Math.min(50, startOffsetY + deltaY * 0.5))
+      
+      update('fotoOffsetX', newOffsetX)
+      update('fotoOffsetY', newOffsetY)
+    }
+
+    const handleMouseUp = () => {
+      setIsDragging(false)
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
+    }
+
+    document.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mouseup', handleMouseUp)
+  }, [data.foto, data.fotoOffsetX, data.fotoOffsetY])
+
+  const handleResetPosition = useCallback(() => {
+    update('fotoOffsetX', 0)
+    update('fotoOffsetY', 0)
+  }, [])
+
   return (
     <div className="space-y-5">
       {/* Foto profilo */}
-      <div className="flex items-center gap-4">
-        <Avatar className="h-20 w-20 border-2 border-border">
-          {data.foto ? (
-            <AvatarImage src={data.foto} alt="Foto profilo" />
-          ) : (
-            <AvatarFallback className="bg-muted">
-              <UserCircle className="h-10 w-10 text-muted-foreground" />
-            </AvatarFallback>
+      <div className="flex items-start gap-4">
+        <div className="flex flex-col items-center gap-2">
+          <div 
+            ref={dragContainerRef}
+            className="relative h-20 w-20 border-2 border-border rounded-full overflow-hidden cursor-move active:cursor-grabbing hover:ring-2 hover:ring-primary/50 transition-all"
+            onMouseDown={handleMouseDown}
+            style={{ cursor: data.foto ? 'grab' : 'default' }}
+          >
+            {data.foto ? (
+              <img 
+                src={data.foto} 
+                alt="Foto profilo"
+                className="w-full h-full object-cover"
+                style={{
+                  objectPosition: `${50 + data.fotoOffsetX}% ${50 + data.fotoOffsetY}%`,
+                }}
+                draggable={false}
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-muted">
+                <UserCircle className="h-10 w-10 text-muted-foreground" />
+              </div>
+            )}
+            {data.foto && isDragging && (
+              <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+                <Move className="h-6 w-6 text-primary" />
+              </div>
+            )}
+          </div>
+          {(data.fotoOffsetX !== 0 || data.fotoOffsetY !== 0) && data.foto && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="text-xs h-7"
+              onClick={handleResetPosition}
+            >
+              <X className="h-3 w-3 mr-1" />
+              Reset pos.
+            </Button>
           )}
-        </Avatar>
-        <div className="flex flex-col gap-2">
+        </div>
+        <div className="flex flex-col gap-2 flex-1">
           <Button
             type="button"
             variant="outline"
@@ -64,6 +135,11 @@ export function DatiPersonaliForm({ data, onChange }: Props) {
               <X className="h-4 w-4 mr-2" />
               Rimuovi
             </Button>
+          )}
+          {data.foto && (
+            <p className="text-xs text-muted-foreground">
+              💡 Clicca e trascina sulla foto per centrarla
+            </p>
           )}
           <input
             ref={fileInputRef}
@@ -150,12 +226,21 @@ export function DatiPersonaliForm({ data, onChange }: Props) {
           />
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="linkedin">LinkedIn</Label>
+          <Label htmlFor="linkedin">Linkedin</Label>
           <Input
             id="linkedin"
-            placeholder="linkedin.com/in/mariorossi"
+            placeholder="https://www.linkedin.com/in/mariorossi"
             value={data.linkedin}
             onChange={(e) => update('linkedin', e.target.value)}
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="github">Github</Label>
+          <Input
+            id="github"
+            placeholder="https://github.com/mariorossi"
+            value={data.github}
+            onChange={(e) => update('github', e.target.value)}
           />
         </div>
         <div className="space-y-1.5">

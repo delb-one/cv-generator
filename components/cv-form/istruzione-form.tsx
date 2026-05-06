@@ -25,6 +25,7 @@ export function IstruzioneForm({ data, onChange }: Props) {
         annoInizio: '',
         annoFine: '',
         voto: '',
+        descrizione: '',
       },
     ])
   }
@@ -101,11 +102,20 @@ export function IstruzioneForm({ data, onChange }: Props) {
               />
             </div>
             <div className="space-y-1.5 sm:col-span-2">
-              <Label>Voto / Descrizione</Label>
+              <Label>Voto</Label>
               <Input
                 placeholder="110/110 con lode"
                 value={ist.voto}
                 onChange={(e) => update(ist.id, 'voto', e.target.value)}
+              />
+            </div>
+            <div className="space-y-1.5 sm:col-span-2">
+              <Label>Descrizione (opzionale)</Label>
+              <textarea
+                className="w-full min-h-[80px] rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                placeholder="Descrizione del percorso di studi, tesi, progetti rilevanti..."
+                value={ist.descrizione}
+                onChange={(e) => update(ist.id, 'descrizione', e.target.value)}
               />
             </div>
           </div>

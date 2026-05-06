@@ -14,7 +14,8 @@ import { CertificazioniForm } from '@/components/cv-form/certificazioni-form'
 import { EuropassPreview } from '@/components/cv-preview/europass-preview'
 import { TemaPicker } from '@/components/cv-form/tema-picker'
 import { usePdfExport } from '@/hooks/use-pdf-export'
-import { defaultCVData, type CVData } from '@/lib/cv-types'
+import { mockCVData } from '@/lib/cv-mock-data'
+import { type CVData, defaultCVData } from '@/lib/cv-types'
 import { Spinner } from '@/components/ui/spinner'
 import { cn } from '@/lib/utils'
 
@@ -29,12 +30,18 @@ const TABS = [
 
 export default function Page() {
   const [cvData, setCvData] = useState<CVData>(defaultCVData)
+  const [isMockLoaded, setIsMockLoaded] = useState(false)
   const [mobileTab, setMobileTab] = useState<'form' | 'preview'>('form')
   const previewRef = useRef<HTMLDivElement>(null)
   const { exportPdf, isExporting } = usePdfExport()
 
   const updateData = <K extends keyof CVData>(key: K, value: CVData[K]) => {
     setCvData((prev) => ({ ...prev, [key]: value }))
+  }
+
+  const loadMockData = () => {
+    setCvData(mockCVData)
+    setIsMockLoaded(true)
   }
 
   return (
@@ -52,6 +59,15 @@ export default function Page() {
           </span>
         </div>
         <div className="flex items-center gap-2">
+          {!isMockLoaded && (
+            <Button
+              onClick={loadMockData}
+              variant="outline"
+              className="gap-2 text-xs"
+            >
+              Carica dati di esempio
+            </Button>
+          )}
           <TemaPicker
             temaId={cvData.temaId}
             onChange={(id) => updateData('temaId', id)}
