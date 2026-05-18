@@ -142,6 +142,33 @@ export const CV_THEMES: CVTheme[] = [
     cefrDark: "#4338ca",
     timelineLine: "#ddd6fe",
   },
+  {
+  id: "minimal-light",
+  nome: "Minimal Light",
+  sidebar: "#f3f4f6",
+  accent: "#6b7280",
+  accentLight: "#f9fafb",
+  cefrDark: "#4b5563",
+  timelineLine: "#d1d5db",
+},
+{
+  id: "soft-gray",
+  nome: "Soft Gray",
+  sidebar: "#e5e7eb",
+  accent: "#9ca3af",
+  accentLight: "#f3f4f6",
+  cefrDark: "#6b7280",
+  timelineLine: "#d6d9de",
+},
+{
+  id: "stone",
+  nome: "Stone",
+  sidebar: "#ececec",
+  accent: "#78716c",
+  accentLight: "#fafaf9",
+  cefrDark: "#57534e",
+  timelineLine: "#d6d3d1",
+},
 ];
 
 export interface FirmaData {

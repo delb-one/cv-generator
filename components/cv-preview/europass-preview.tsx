@@ -14,6 +14,24 @@ interface Props {
   data: CVData;
 }
 
+function getContrastTextColor(bgHex: string): string {
+  const hex = bgHex.replace("#", "");
+  const normalized =
+    hex.length === 3
+      ? hex
+          .split("")
+          .map((c) => c + c)
+          .join("")
+      : hex;
+
+  const r = parseInt(normalized.slice(0, 2), 16);
+  const g = parseInt(normalized.slice(2, 4), 16);
+  const b = parseInt(normalized.slice(4, 6), 16);
+
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminance > 0.62 ? "#1a1a2e" : "#ffffff";
+}
+
 function buildCefrColors(theme: CVTheme): Record<string, string> {
   return {
     A1: "#d1e7ff",
@@ -45,38 +63,38 @@ function CefrCell({ level, theme }: { level: LivelloCEFR; theme: CVTheme }) {
   );
 }
 
-function SkillBadge({
-  livello,
-  theme,
-}: {
-  livello: LivelloSkill;
-  theme: CVTheme;
-}) {
-  const colors: Record<LivelloSkill, { bg: string; text: string }> = {
-    Base: { bg: theme.accent, text: '#fff' },
-    Intermedio: { bg: theme.accent, text: '#fff' },
-    Avanzato: { bg: theme.accentLight, text: theme.accent },
-  };
-  const c = colors[livello];
-  return (
-    <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: c.bg,
-        color: c.text,
-        padding: "2px 7px",
-        borderRadius: "3px",
-        fontSize: "9px",
-        fontWeight: 600,
-        lineHeight: 1,
-      }}
-    >
-      {livello}
-    </span>
-  );
-}
+// function SkillBadge({
+//   livello,
+//   theme,
+// }: {
+//   livello: LivelloSkill;
+//   theme: CVTheme;
+// }) {
+//   const colors: Record<LivelloSkill, { bg: string; text: string }> = {
+//     Base: { bg: theme.accent, text: '#fff' },
+//     Intermedio: { bg: theme.accent, text: '#fff' },
+//     Avanzato: { bg: theme.accentLight, text: theme.accent },
+//   };
+//   const c = colors[livello];
+//   return (
+//     <span
+//       style={{
+//         display: "inline-flex",
+//         alignItems: "center",
+//         justifyContent: "center",
+//         backgroundColor: c.bg,
+//         color: c.text,
+//         padding: "2px 7px",
+//         borderRadius: "3px",
+//         fontSize: "9px",
+//         fontWeight: 600,
+//         lineHeight: 1,
+//       }}
+//     >
+//       {livello}
+//     </span>
+//   );
+// }
 
 function SectionTitle({
   children,
@@ -96,7 +114,7 @@ function SectionTitle({
           letterSpacing: "0.05em",
           borderBottom: "2px solid",
           borderColor: theme.accent,
-          paddingBottom: "3px",
+          paddingBottom: "7px",
           margin: 0,
         }}
       >
@@ -110,6 +128,7 @@ export const EuropassPreview = forwardRef<HTMLDivElement, Props>(
   function EuropassPreview({ data }, ref) {
     const { datiPersonali: dp } = data;
     const theme = CV_THEMES.find((t) => t.id === data.temaId) ?? CV_THEMES[0];
+    const sidebarText = getContrastTextColor(theme.sidebar);
 
     const fullName = [dp.nome, dp.cognome].filter(Boolean).join(" ");
 
@@ -135,7 +154,7 @@ export const EuropassPreview = forwardRef<HTMLDivElement, Props>(
           style={{
             width: "66mm",
             backgroundColor: theme.sidebar,
-            color: "#fff",
+            color: sidebarText,
             padding: "24px 16px",
             display: "flex",
             flexDirection: "column",
@@ -209,14 +228,14 @@ export const EuropassPreview = forwardRef<HTMLDivElement, Props>(
           <div style={{ display: "flex", flexDirection: "column", gap: "7px" }}>
             <p
               style={{
-                fontSize: "9px",
+                fontSize: "10px",
                 fontWeight: 700,
                 textTransform: "uppercase",
                 letterSpacing: "0.08em",
                 opacity: 0.7,
                 margin: "0 0 4px 0",
-                borderBottom: "1px solid rgba(255,255,255,0.3)",
-                paddingBottom: "4px",
+                // borderBottom: "1px solid rgba(255,255,255,0.3)",
+                paddingBottom: "7px",
                 lineHeight: 1,
               }}
             >
@@ -347,14 +366,14 @@ export const EuropassPreview = forwardRef<HTMLDivElement, Props>(
             >
               <p
                 style={{
-                  fontSize: "9px",
+                  fontSize: "10px",
                   fontWeight: 700,
                   textTransform: "uppercase",
                   letterSpacing: "0.08em",
                   opacity: 0.7,
                   margin: "0 0 4px 0",
-                  borderBottom: "1px solid rgba(255,255,255,0.3)",
-                  paddingBottom: "4px",
+                  // borderBottom: "1px solid rgba(255,255,255,0.3)",
+                  paddingBottom: "7px",
                   lineHeight: 1,
                 }}
               >
@@ -406,14 +425,14 @@ export const EuropassPreview = forwardRef<HTMLDivElement, Props>(
             >
               <p
                 style={{
-                  fontSize: "9px",
+                  fontSize: "10px",
                   fontWeight: 700,
                   textTransform: "uppercase",
                   letterSpacing: "0.08em",
                   opacity: 0.7,
                   margin: "0 0 4px 0",
-                  borderBottom: "1px solid rgba(255,255,255,0.3)",
-                  paddingBottom: "4px",
+                  // borderBottom: "1px solid rgba(255,255,255,0.3)",
+                  paddingBottom: "7px",
                   lineHeight: 1,
                 }}
               >
@@ -452,14 +471,14 @@ export const EuropassPreview = forwardRef<HTMLDivElement, Props>(
             >
               <p
                 style={{
-                  fontSize: "9px",
+                  fontSize: "10px",
                   fontWeight: 700,
                   textTransform: "uppercase",
                   letterSpacing: "0.08em",
                   opacity: 0.7,
                   margin: "0 0 4px 0",
-                  borderBottom: "1px solid rgba(255,255,255,0.3)",
-                  paddingBottom: "4px",
+                  // borderBottom: "1px solid rgba(255,255,255,0.3)",
+                  paddingBottom: "7px",
                   lineHeight: 1,
                 }}
               >
@@ -478,7 +497,7 @@ export const EuropassPreview = forwardRef<HTMLDivElement, Props>(
                   <span style={{ fontSize: "9.5px", opacity: 0.9 }}>
                     {c.nome}
                   </span>
-                  <SkillBadge livello={c.livello} theme={theme} />
+                  {/* <SkillBadge livello={c.livello} theme={theme} /> */}
                 </div>
               ))}
             </div>
@@ -489,14 +508,14 @@ export const EuropassPreview = forwardRef<HTMLDivElement, Props>(
             <div>
               <p
                 style={{
-                  fontSize: "9px",
+                  fontSize: "10px",
                   fontWeight: 700,
                   textTransform: "uppercase",
                   letterSpacing: "0.08em",
                   opacity: 0.7,
                   margin: "0 0 6px 0",
-                  borderBottom: "1px solid rgba(255,255,255,0.3)",
-                  paddingBottom: "4px",
+                  // borderBottom: "1px solid rgba(255,255,255,0.3)",
+                  paddingBottom: "7px",
                   lineHeight: 1,
                 }}
               >
@@ -507,8 +526,8 @@ export const EuropassPreview = forwardRef<HTMLDivElement, Props>(
                   <span
                     key={p}
                     style={{
-                      backgroundColor: "rgba(255,255,255,0.2)",
-                      color: "#fff",
+                      // backgroundColor: "rgba(255,255,255,0.2)",
+                      color: sidebarText,
                       padding: "1px 6px",
                       borderRadius: "3px",
                       fontSize: "9px",
@@ -535,7 +554,7 @@ export const EuropassPreview = forwardRef<HTMLDivElement, Props>(
           }}
         >
           {/* Europass header */}
-          <div
+          {/* <div
             style={{
               display: "flex",
               justifyContent: "flex-end",
@@ -580,7 +599,7 @@ export const EuropassPreview = forwardRef<HTMLDivElement, Props>(
                 Curriculum Vitae
               </span>
             </div>
-          </div>
+          </div> */}
 
           {/* Profilo professionale */}
           {data.profiloProfessionale && (
